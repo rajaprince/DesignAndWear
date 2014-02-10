@@ -74,12 +74,18 @@
                 url: "/account/verify",
                 data: $('#signin').serialize(),
                 success: function (msg) {
+                    console.log(msg);
                     if (msg == "Verified") {
                         window.location = "../home/index";
+                    }
+                    else if (msg == "Admin")
+                    {
+                        window.location = "../home/Admin";
                     }
                     else {
                         $('#errorsummary').append(msg);
                         $('#error').show();
+
                     }
                 },
                 error: function () {
