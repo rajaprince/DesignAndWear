@@ -1,0 +1,93 @@
+﻿@{
+    Layout = "~/views/shared/_Layout.cshtml"; 
+}
+
+<div class="span6" >
+    <div class="area">
+        <form class="form-horizontal" id="signin" onsubmit="return f1()" method="post">
+            <div class="heading">
+                <h4 class="form-heading">Sign In</h4>
+            </div>
+            <div class="alert alert-error" id="error">
+                <button type="button" class="close" data-dismiss="alert" onclick="f2()">×</button>
+                <strong>Access Denied!</strong>
+                <div id="errorsummary"><ul></ul></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputUsername">Username</label>
+                <div class="controls">
+                    <input type="text" name="UserName" id="UserName" placeholder="e.g. zia_kayani"style="height:30px" required
+                        data-content="Your Username...??" data-original-title="Username" data-placement="right">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputPassword">Password</label>
+                <div class="controls">
+                    <input type="password" id="Password" name="Password" placeholder="Min. 6 Characters" style="height:30px"
+                        data-content="Your Password...??" data-original-title="Password" data-placement="right" required>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <label class="checkbox"
+                        data-content="Using Secure System...??" data-original-title="Keep me Signed in" data-placement="left">
+                        <input type="checkbox"> Keep me signed in
+                        <a href="#" class="btn btn-link">Forgot my password</a>
+                    </label>
+                    <button type="submit" class="btn btn-success">Sign In</button>
+                    <button type="button" class="btn">Help</button>
+                </div>
+            </div>	
+        </form>	
+	</div>                           
+</div>
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/bootstrap-tooltip.js"></script>
+    <script src="~/Scripts/bootstrap-popover.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        $('#UserName').popover();
+        $('#Password').popover();
+        $('#signedin').popover();
+        $('.checkbox').popover();
+        $('#error').hide();
+    });
+    function f2() {
+        $('#error').hide();
+    }
+    function f1() {
+
+        $('#errorsummary').empty();
+        $('#error').hide();
+        var isDataValid = true;
+
+        if (document.getElementById('Password').value.length < 6) {
+            $('#errorsummary').append("<li>Password length too Short, can't be Valid</li>");
+            $('#error').show();
+            isDataValid = false;
+        }
+        if (isDataValid) {
+            $.ajax({
+                type: "POST",
+                url: "/account/verify",
+                data: $('#signin').serialize(),
+                success: function (msg) {
+                    if (msg == "Verified") {
+                        window.location = "../home/index";
+                    }
+                    else {
+                        $('#errorsummary').append(msg);
+                        $('#error').show();
+                    }
+                },
+                error: function () {
+                    alert("ERROR: can't connect to Server");
+                }
+            });
+        }
+        return false;
+    }
+
+</script>

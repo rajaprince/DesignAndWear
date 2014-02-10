@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Design Online</title>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+</head>
+<body>
+<style>body{padding-top:20px}</style>
+
+    <div class="navbar navbar-fixed-top navbar-inverse">
+        <div class="navbar-inner">
+            <div class="container-fluid">
+              
+              
+              <a class="brand" href="/home/index">Draw</a>
+              <div class="nav-collapse">
+                <ul class="nav">
+
+                  <li><a href="/home/Index1">Home</a></li>
+                  <li><a href="/home/Help">Help</a></li>
+                  <li><a href="/home/About">About</a></li>
+                </ul>
+                @{
+                   if(Session["username"]==null)
+                   {
+                       <p class="navbar-text pull-right" id="p1">
+                           <a href="/account/signin" onMouseOver="this.style.color='#FFFFFF'"
+                               onMouseOut="this.style.color='#848484'"
+                               style="color:gray;text-decoration:none">
+                               Sign in</a>
+                           &nbsp &nbsp
+                       </p>
+                        <p class="navbar-text pull-right" id="p2">
+                           <a href="/account/signup" onMouseOver="this.style.color='#FFFFFF'"
+                               onMouseOut="this.style.color='#848484'"
+                               style="color:gray;text-decoration:none">
+                               Sign up</a>
+                           &nbsp &nbsp
+                       </p>
+                   }
+                   else
+                   {
+                        <p class="navbar-text pull-right">
+                            <a href="/account/signoff" onMouseOver="this.style.color='#FFFFFF'"
+                               onMouseOut="this.style.color='#848484'"
+                               style="color:gray;text-decoration:none">
+                                Signoff </a> &nbsp &nbsp
+                        </p>
+                       <p class="navbar-text pull-right">Signed in as <a href="/account/userinfo">@Session["username"]</a>&nbsp &nbsp</p>
+                   } 
+                }
+              </div><!--/.nav-collapse -->
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid" style="margin-top:30px;margin-left:10px">
+      <div class="row-fluid row">
+        <div class="span3">
+          <div class="well sidebar-nav-fixed">
+            
+              <ul class="nav nav-list">
+                <li class="nav-header" style="color:black">Search</li>
+                <li>
+                    <form method="post">
+                        <input type="text" name="keywords" class="search" placeholder="Search" style="height:30px;width:220px" required />
+                        <input type="submit" value="Search Now" class="btn"/>
+                    </form>
+                 </li>
+                <li class="nav-header" style="color:black">Categories</li>
+                  @foreach(string s in ViewBag.Types) {
+                    <li><a href="/home/type?img=@s">@s</a></li>
+                  }
+                <li class="nav-header" style="color:black">Recently Added</li>
+                <li><a href="#">Link</a></li>
+                <li><a href="#">Link</a></li>
+                <li><a href="#">Link</a></li>
+                <li><a href="#">Link</a></li>
+              </ul>
+          </div><!--/.well -->
+        </div><!--/span-->
+
+        <div class="span9 span-fixed-sidebar">
+     
+            @RenderBody()
+         
+        </div><!--/span-->
+      </div><!--/row-->
+    </div><!--/.fluid-container-->
+</body>
+</html>

@@ -1,0 +1,54 @@
+﻿
+<div>
+    @using (Html.BeginForm("SaveImage", "Home", FormMethod.Post, new { id = "drawingForm" }))
+    {
+        <input type="hidden" name="imageData" id="imageData" />
+        <div id="zwibbler" style="border:2px solid black;width:1000px;height:580px;"></div>
+        <input class="btn btn-submit" type="button" id="btnSave" value="Save Drawing" />
+    }
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/zwibbler-demo.js"></script>
+    <script type="text/javascript">
+        var zwibbler = Zwibbler.create("zwibbler", {
+            showPropertyPanel: true,
+            showMoveToFrontBack: true,
+            showShapeBrushTool: true,
+            showRoundRectTool: true,
+            showSloppinessProperty: true,
+            backgroundImage: "../@ViewBag.Image"
+        });
+        $("#btnSave").click(function () {
+            var form = $("#drawingForm");
+            var image = zwibbler.save("png");;
+            image = image.replace('data:image/png;base64,', '');
+            $("#imageData").val(image);
+            form.submit();
+        });
+
+        $(document).ready(function () {
+
+
+            var img = document.getElementById("a");
+//            img.src = "Images/wd-copy.png";
+       //     alert(img.src);
+//            $('#a').src = "~/Images/wd-copy.png";
+            
+
+
+
+            var div = document.getElementById('zwibbler');
+            
+            var nodes = div.childNodes;
+
+            for (var i = 0 ; i < nodes.length; i++) {
+
+                if (nodes[i].nodeName.toLowerCase() == 'canvas' && i==1) {
+
+                }
+            }
+        });
+
+
+    </script>
+
+</div>

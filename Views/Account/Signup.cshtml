@@ -1,0 +1,192 @@
+﻿@{
+    Layout = "~/views/shared/_Layout.cshtml"; 
+ }
+<div class="span6">
+    <div class="area">
+        <div class="heading">
+            <h4 class="form-heading">Sign Up</h4>
+        </div>
+        <div class="alert alert-success" id="success">
+            <button type="button" class="close" data-dismiss="alert" onclick="f3()">×</button>
+            <div id="successSummary"><ul></ul></div>
+        </div>
+        <div class="alert alert-info" id="info">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <strong>Confirmation: </strong> Thank you for your registration.
+        </div>
+        <div class="alert alert-error" id="error">
+            <button type="button" class="close" data-dismiss="alert" onclick="f2()">×</button>
+            <strong>ERROR..!!</strong>
+            <div id="errorSummary"><ul></ul></div>
+            Please provide valid Information.
+        </div>
+        <form class="form-horizontal" onsubmit="return f1()" id="signup">
+            
+            <div class="control-group">
+                <label class="control-label" for="inputCompanyName">Name</label>
+                <div class="controls">
+                    <input type="text" name="Name" id="Name" style="height:30px" required placeholder="E.g. Zia Kayani"
+                        data-content="Whats your Name..?" data-original-title="Name" data-placement="right">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputFirst">Username</label>
+                <div class="controls">
+                    <input type="text" id="UserName" name="UserName" placeholder="E.g. zia_kayani"style="height:30px" required
+                        data-content="Choose unique username" data-original-title="Username" data-placement="right">
+                     <input type="button" class="btn btn-warning" value="Check" onclick="checkAvailablity()" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputLast">Password</label>
+                <div class="controls">
+                    <input type="password" name="Password" id="Password"  placeholder="Min. 6 Characters" style="height:30px" required
+                        data-content="Choose password" data-original-title="Password" data-placement="right">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputCellNo">Cell No</label>
+                <div class="controls">
+                    <input type="text" name="CellNo" id="CellNo" placeholder="E.g. 0333-1234567"style="height:30px" required onkeypress ="return letternumber(event)"
+                        data-content="Your valid Cell No..??" data-original-title="Cell No" data-placement="right">
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label class="control-label" for="inputAddress">Address</label>
+                <div class="controls">
+                    <input type="text" name="Address" id="Address" placeholder="e.g. streat, city, etc" style="height:30px" required
+                        data-content="Your valid Address..??" data-original-title="Address" data-placement="right">
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <label class="checkbox"
+                        data-content="Are you agree all Terms of Services...??" data-original-title="Agreement" data-placement="left">
+                        <input type="checkbox" id="agree" checked> I agree all your <a href="#">Terms of Services</a>
+                    </label>
+                    <button type="submit" class="btn btn-success">Sign Up</button>
+                    <button type="button" class="btn">Help</button>
+                </div>
+            </div>	
+        </form>	
+	</div>                            
+</div>
+
+
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/bootstrap-tooltip.js"></script>
+    <script src="~/Scripts/bootstrap-popover.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#Name').popover();
+        $('#Password').popover();
+        $('#UserName').popover();
+        $('#CellNo').popover();
+        $('#Address').popover();
+        $('.checkbox').popover();
+        $('#error').hide();
+        $('#success').hide();
+        $('#info').hide();
+    });
+    function f2() {
+        $('#error').hide();
+    }
+    function f3() {
+        $('#success').hide();
+    }
+    function letternumber(event) {
+        var key;
+        var keychar;
+
+        if (window.event)
+            key = window.event.keyCode;
+
+        keychar = String.fromCharCode(key);
+
+
+        // alphas and numbers
+        if (((".+-0123456789").indexOf(keychar) > -1)) {
+            var1 = true;
+        }
+        else
+            return false;
+    }
+    function checkAvailablity() {
+
+        $('#errorSummary').empty();
+        $('#successSummary').empty();
+        $('#error').hide();
+        $('#success').hide();
+
+        var UserName = document.getElementById("UserName").value;
+
+        $.ajax({
+            type: "POST",
+            url: "/account/CheckAvailability",
+            data: { 'UserName' : UserName },
+            success: function (exist) {
+                if (!exist) {
+                    $('#successSummary').append("<li>UserName is Available....</li>");
+                    $('#success').show();
+                }
+                else {
+                    $('#errorSummary').append("<li>UserName Already Exists....</li>");
+                    $('#error').show();
+                }
+            },
+            error: function () {
+                alert("ERROR: can't connect to Server");
+
+            }
+        });
+    }
+    function f1() {
+
+        $('#errorSummary').empty();
+        $('#successSummary').empty();
+        var isDataValid = true;
+
+        if (document.getElementById('Password').value.length < 6) {
+            $('#errorSummary').append("<li>Password length too Short</li>");
+            $('#error').show();
+            isDataValid = false;
+        }
+        if (!(document.getElementById('agree')).checked) {
+            $('#errorSummary').append("<li>You should agree with Terms of Services</li>");
+            $('#error').show();
+            isDataValid = false;
+        }
+        if (isDataValid) {
+            $.ajax({
+                type: "POST",
+                url: "/account/createAccount",
+                data: $('#signup').serialize(),
+                success: function (msg) {
+                    if (msg == "Added") {
+                        $('#signup').hide();
+                        $('#successSummary').append("<li> <Strong> Successfully Sign Up </strong> Will Be Redirect To Home Page </li>");
+                        $('#success').show();
+                        $('#info').show();
+                        setTimeout(function () {
+                            window.location = "../home/index";
+                            }, 6000);
+                    }
+                    else {
+                        $('#errorSummary').append(msg);
+                        $('#error').show();
+                    }
+                },
+                error: function () {
+                    alert("ERROR: can't connect to Server");
+
+                }
+            });
+        }
+        return false;
+    }
+
+</script>

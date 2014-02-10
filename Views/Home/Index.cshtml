@@ -1,0 +1,196 @@
+﻿@{
+    Layout = "~/views/shared/_Layout.cshtml"; 
+}
+@model List<MvcApplication1.Models.ModelObject>
+
+<script src="~/Scripts/bootstrap.js"></script>
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.7.1.min.js"></script>
+<style>
+
+.pricing-table .plan {
+  border-radius: 5px;
+  text-align: center;
+  background-color: #f3f3f3;
+  -moz-box-shadow: 0 0 6px 2px #b0b2ab;
+  -webkit-box-shadow: 0 0 6px 2px #b0b2ab;
+  box-shadow: 0 0 6px 2px #b0b2ab;
+}
+ 
+ .plan:hover {
+  background-color: #fff;
+  -moz-box-shadow: 0 0 12px 3px #b0b2ab;
+  -webkit-box-shadow: 0 0 12px 3px #b0b2ab;
+  box-shadow: 0 0 12px 3px #b0b2ab;
+}
+ 
+ .plan {
+  padding: 20px;
+  color: #ff;
+  background-color: #5e5f59;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+  border-radius: 5px 5px 0 0;
+}
+  
+.plan-name-bronze {
+  padding: 0px;
+  color: #fff;
+  background-color: #ffffff;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+  border-radius: 5px 5px 0 0;
+ }
+  
+.pricing-table-bronze  {
+  padding: 0px;
+  color: #fff;
+  background-color: #ffffff;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+  border-radius: 5px 5px 0 0;
+}
+  
+.pricing-table .plan .plan-name span {
+  font-size: 20px;
+}
+ 
+.pricing-table .plan ul {
+  list-style: none;
+  margin: 0;
+  -moz-border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 0 0 5px 5px;
+  border-radius: 0 0 5px 5px;
+}
+ 
+.pricing-table .plan ul li.plan-feature {
+  padding: 15px 10px;
+  border-top: 1px solid #c5c8c0;
+}
+ 
+.pricing-three-column {
+  margin: 0 auto;
+  width: 80%;
+}
+ 
+.pricing-variable-height .plan {
+  float: none;
+  margin-left: 2%;
+  vertical-align: bottom;
+  display: inline-block;
+  zoom:1;
+  *display:inline;
+}
+ 
+.plan-mouseover .plan-name {
+  background-color: #4e9a06 !important;
+}
+ 
+.btn-plan-select {
+  padding: 8px 25px;
+  font-size: 18px;
+}
+
+    </style>
+
+<link href="~/Content/jquery.bxslider.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery.bxslider.min.js"></script>
+<div>
+<div class="slider">
+    @foreach (string s in ViewBag.Types)
+    {
+        <div class="slide"><a href="/home/type?img=@s"><img style="height:150px;width:150px" src="~/Images/@s/1.png" /></a></div>
+        <div class="slide"><a href="/home/type?img=@s"><img style="height:150px;width:150px" src="~/Images/@s/2.png" /></a></div>
+        <div class="slide"><a href="/home/type?img=@s"><img style="height:150px;width:150px" src="~/Images/@s/3.png" /></a></div>
+        <div class="slide"><a href="/home/type?img=@s"><img style="height:150px;width:150px" src="~/Images/@s/4.png" /></a></div>
+    }
+    </div>
+    </div>
+        @if (Model != null)
+        {
+            int i = 0;
+            
+            <script src="~/Scripts/jquery.raty.js"></script>
+            
+            while (i < Model.Count)
+            {
+                int j = 0;
+               <div class="container">
+                    <div class="row-fluid pricing-table pricing-four-column">
+                        
+                        @for (; i < Model.Count && j < 3; i++, j++)
+                        {
+                            <div class="span4 plan">
+                                <div class="plan-name-bronze">
+                                    <img style="height:228px;width:228px" src="@Model[i].Image" />
+                                </div>
+                                        @{
+                                            string imageId = (Model[i].Image.Split('/')[Model[i].Image.Split('/').Length - 1]).Split('.')[0];
+                                            double rating = Convert.ToDouble(Model[i].Rating.Split('/')[0]);
+                                            <div id="@imageId" style="padding: 15px 10px;"> 
+                                                <div class="pull-right" style="font:bold 20px Candara;margin-right:-100%;margin-top:-3px">@Model[i].Rating</div>
+                                            </div>
+                                            
+                                            if (Session["username"] == null)
+                                            {
+                                                <script>
+                                                    $('#@imageId').raty({
+                                                        click: function (score, evt) {
+                                                            sendRating("id=" + $(this).attr('id') + "&score=" + score);
+                                                        },
+                                                        score: Number(@rating),
+                                                        readOnly: true,
+                                                        noRatedMsg: "You can't rate yet.!! Pleae Login... "
+                                                    });
+                                                </script>
+                                            }
+                                            else
+                                            {
+                                                <script>
+                                                    $('#@imageId').raty({
+                                                        click: function (score, evt) {
+                                                            sendRating("id=" + $(this).attr('id') + "&score=" + score);
+                                                        },
+                                                        score: Number(@rating)
+                                                    });
+                                                </script>
+                                            }
+                                        }
+                                <a href="/Home/Order?img=@Model[i].Image" class="btn btn-default btn-plan-select" >Order</a>
+                                <a href="/Home/Canvas?img=@Model[i].Image" class="btn btn-default btn-plan-select">Design</a>
+                            </div> 
+                        }            
+                    </div>
+                </div>
+            <br />
+            }
+        }
+
+
+<script>
+    $(document).ready(function () {
+        $('.slider').bxSlider({
+            slideWidth: 225,
+            minSlides: 4,
+            maxSlides: 4,
+            moveSlides: 4,
+            slideMargin: 10,
+            hideControlOnEnd: true,
+            auto: true,
+            autoHover: true,
+            captions: true,
+            autoControls: false,
+            controls: false
+        });
+    });
+    function sendRating(data) {
+        alert(data);
+        $.ajax({
+            type: "POST",
+            url: "/Home/Rating",
+            data: data,
+            success: function (msg) {  }
+        });
+    }
+</script>

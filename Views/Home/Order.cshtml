@@ -1,0 +1,187 @@
+﻿@model MvcApplication1.Models.ModelObject
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<style>
+
+.pricing-table .plan {
+  border-radius: 5px;
+  text-align: center;
+  background-color: #f3f3f3;
+  -moz-box-shadow: 0 0 6px 2px #b0b2ab;
+  -webkit-box-shadow: 0 0 6px 2px #b0b2ab;
+  box-shadow: 0 0 6px 2px #b0b2ab;
+}
+ 
+ .plan:hover {
+  background-color: #fff;
+  -moz-box-shadow: 0 0 12px 3px #b0b2ab;
+  -webkit-box-shadow: 0 0 12px 3px #b0b2ab;
+  box-shadow: 0 0 12px 3px #b0b2ab;
+}
+ 
+ .plan {
+  padding: 20px;
+  color: #ff;
+  background-color: #5e5f59;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+  border-radius: 5px 5px 0 0;
+}
+  
+.plan-name-bronze {
+  padding: 0px;
+  color: #fff;
+  background-color: #ffffff;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+  border-radius: 5px 5px 0 0;
+ }
+  
+.pricing-table-bronze  {
+  padding: 0px;
+  color: #fff;
+  background-color: #ffffff;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+  border-radius: 5px 5px 0 0;
+}
+  
+.pricing-table .plan .plan-name span {
+  font-size: 20px;
+}
+ 
+.pricing-table .plan ul {
+  list-style: none;
+  margin: 0;
+  -moz-border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 0 0 5px 5px;
+  border-radius: 0 0 5px 5px;
+}
+ 
+.pricing-table .plan ul li.plan-feature {
+  padding: 15px 10px;
+  border-top: 1px solid #c5c8c0;
+}
+ 
+.pricing-three-column {
+  margin: 0 auto;
+  width: 80%;
+}
+ 
+.pricing-variable-height .plan {
+  float: none;
+  margin-left: 2%;
+  vertical-align: bottom;
+  display: inline-block;
+  zoom:1;
+  *display:inline;
+}
+ 
+.plan-mouseover .plan-name {
+  background-color: #4e9a06 !important;
+}
+ 
+.btn-plan-select {
+  padding: 8px 25px;
+  font-size: 18px;
+}
+
+    </style>
+<script src="~/Scripts/jquery.raty.js"></script>
+<div class="span6" >
+    <div class="area">
+            <div class="heading">
+                <h4 class="form-heading">Place Order</h4>
+            </div>
+            <div class="container" style="margin-top:20px">
+                <div class="row-fluid pricing-table pricing-four-column">
+                        
+                        <div class="span4 plan">
+                            <div class="plan-name-bronze">
+                                <img style="height:300px;width:350px" src="@Model.Image" />
+                            </div>
+                                    @{
+                                        string imageId = (Model.Image.Split('/')[Model.Image.Split('/').Length - 1]).Split('.')[0];
+                                        double rating = Convert.ToDouble(Model.Rating.Split('/')[0]);
+                                        <div id="@imageId" style="padding: 15px 10px;"> 
+                                            <div class="pull-right" style="font:bold 20px Candara;margin-right:-100%;margin-top:-3px">@Model.Rating</div>
+                                        </div>
+                                            
+                                        if (Session["username"] == null)
+                                        {
+                                            <script>
+                                                $('#@imageId').raty({
+                                                    click: function (score, evt) {
+                                                        sendRating("id=" + $(this).attr('id') + "&score=" + score);
+                                                    },
+                                                    score: Number(@rating),
+                                                    readOnly: true,
+                                                    noRatedMsg: "You can't rate yet.!! Pleae Login... "
+                                                });
+                                            </script>
+                                        }
+                                        else
+                                        {
+                                            <script>
+                                                $('#@imageId').raty({
+                                                    click: function (score, evt) {
+                                                        sendRating("id=" + $(this).attr('id') + "&score=" + score);
+                                                    },
+                                                    score: Number(@rating)
+                                                });
+                                            </script>
+                                        }
+                                    }
+                            <a href="/Home/Canvas?img=@Model.Image" class="btn btn-primary btn-plan-select">Design</a>
+                        </div>
+                       <div class="span8">
+                        <form action="PlaceOrder?img=@Model.Image" class="form-horizontal" id="qnty" onsubmit="return f1()" method="post">
+                            <div class="control-group">
+                                <label class="control-label" for="inputQuantity"><b>Quantity</b></label>
+                                <div class="controls">
+                                    <input type="number" name="quantity" id="quantity" style="height:30px" required
+                                        data-content="How Many Items...??" data-original-title="Quantity" data-placement="right">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <div class="controls">
+                                     <input type="hidden" name="imageData" id="imageData" />
+                                    <button type="submit" class="btn btn-success btn-plan-select" style="margin-left:60px">Order</button>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <div class="alert alert-error" id="error">
+                                    <strong>Access Denied!</strong>
+                                    <div id="errorsummary">
+                                        <ul>
+                                            <li>
+                                                Invalid Quantity
+                                            </li>
+                                         </ul>
+                                    </div>
+                                </div>
+                            </div>   
+                            	
+                        </form>
+                     </div>              
+                </div>                
+            </div>
+	</div>                           
+</div>
+
+<script src="~/Scripts/bootstrap-tooltip.js"></script>
+<script src="~/Scripts/bootstrap-popover.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#error').hide();
+        $('#quantity').popover();
+    });
+    function f1() {
+        var v = document.getElementById('quantity')
+        if (v.value <= 0) {
+            $('#error').show();
+            return false;
+        }
+        else
+            return true;
+    }
+</script>
